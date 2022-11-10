@@ -15,13 +15,8 @@ private enum Constants {
 struct HomeView: View {
     @State private var searchBar: String = ""
     
-    let user: User
     let viewModel: HomeViewModel
-    
-    init(user: User) {
-        self.user = user
-        viewModel = HomeViewModel(user: user)
-    }
+    let openDetails: () -> Void
 
     var body: some View {
         content
@@ -55,8 +50,9 @@ struct HomeView: View {
                 VStack {
                     WorkInProgressPlayerView(workInProgress: viewModel.worksInProgress![0])
                         .padding(.vertical, Constants.defaultPadding)
+                        .padding(.horizontal, Constants.defaultPadding)
                         .onTapGesture {
-                            print("")
+                            openDetails()
                         }
                     HStack {
                         Button {
@@ -78,7 +74,8 @@ struct HomeView: View {
 
                         } label: {
                             VStack {
-                                Image(systemName: "record.circle")
+                                Image(systemName: "circle.fill")
+                                    .foregroundColor(.red)
                                 Text("record")
                             }
                         }
@@ -224,35 +221,35 @@ private struct WorkInProgressPlayerView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxHeight: 60)
+        .padding(.bottom, Constants.defaultPadding)
+        .shadow(color: .gray, radius: 3, x: 2, y: 2)
 
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
+        
+        var loggedInUser = User(username: "itsdpark")
+        // Load works in progress...
+        let worksInProgress = [
+            WorkInProgress(
+                title: "blank looks", creator: loggedInUser,
+                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0),
+            WorkInProgress(
+                title: "just one cig", creator: loggedInUser,
+                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1),
+            WorkInProgress(
+                title: "welcome to the way that you look at me", creator: loggedInUser,
+                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2),
+            WorkInProgress(
+                title: "random melody ideas", creator: loggedInUser,
+                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3)
+        ]
+        // Set works to
+        loggedInUser.worksInProgress = worksInProgress
 
-        HomeView(
-            user: User(
-                username: "itsdpark", worksInProgress: [
-                    WorkInProgress(
-                        title: "blank looks", creator: User(username: "itsdpark"),
-                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0
-                    ),
-                    WorkInProgress(
-                        title: "just one cig", creator: User(username: "itsdpark"),
-                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1
-                    ),
-                    WorkInProgress(
-                        title: "welcome to the way that you look at me", creator: User(username: "itsdpark"),
-                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2
-                    ),
-                    WorkInProgress(
-                        title: "random melody ideas", creator: User(username: "itsdpark"),
-                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3
-                    )
-                ]
-            )
-        )
+        return HomeView(viewModel: HomeViewModel(user: loggedInUser)) {}
     }
 }
 
