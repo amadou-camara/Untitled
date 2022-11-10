@@ -14,6 +14,14 @@ private enum Constants {
 
 struct HomeView: View {
     @State private var searchBar: String = ""
+    
+    let user: User
+    let viewModel: HomeViewModel
+    
+    init(user: User) {
+        self.user = user
+        viewModel = HomeViewModel(user: user)
+    }
 
     var body: some View {
         content
@@ -24,27 +32,12 @@ struct HomeView: View {
             let safeAreaInsets = bounds.safeAreaInsets
             ScrollView(.vertical, showsIndicators: true) {
                 VStack {
-//                    ForEach(homeModel.worksInProgress)
-                    WorkInProgressView(
-                        workInProgress: WorkInProgress(
-                            title: "blank looks", creator: User(username: "itsdpark"),
-                            dateCreated: Date(), privacy: .openToAll, playlists: [])
-                    )
-                    WorkInProgressView(
-                        workInProgress: WorkInProgress(
-                            title: "just one cig", creator: User(username: "itsdpark"),
-                            dateCreated: Date(), privacy: .openToAll, playlists: [])
-                    )
-                    WorkInProgressView(
-                        workInProgress: WorkInProgress(
-                            title: "welcome to the way that you look at me", creator: User(username: "itsdpark"),
-                            dateCreated: Date(), privacy: .openToAll, playlists: [])
-                    )
-                    WorkInProgressView(
-                        workInProgress: WorkInProgress(
-                            title: "random melody ideas", creator: User(username: "itsdpark"),
-                            dateCreated: Date(), privacy: .openToAll, playlists: [])
-                    )
+                    if let worksInProgress = viewModel.worksInProgress {
+                        ForEach(worksInProgress) { workInProgress in
+                            WorkInProgressView(workInProgress: workInProgress)
+                            
+                        }
+                    }
                 }
                 .safeAreaInset(edge: .leading, spacing: 0) {
                     EmptyView().frame(width: safeAreaInsets.leading + Constants.defaultPadding)
@@ -58,30 +51,55 @@ struct HomeView: View {
                 header
             }
             .safeAreaInset(edge: .bottom) {
-                HStack {
-                    VStack {
-                        Image(systemName: "textformat")
-                        Text("write")
+                // Update this
+                VStack {
+                    WorkInProgressPlayerView(workInProgress: viewModel.worksInProgress![0])
+                        .padding(.vertical, Constants.defaultPadding)
+                        .onTapGesture {
+                            print("")
+                        }
+                    HStack {
+                        Button {
+
+                        } label: {
+                            VStack {
+                                Image(systemName: "textformat")
+                                Text("write")
+                            }
+                        }
+                        .padding(.horizontal, 8)
+
+
+                        Spacer()
+                        Divider()
+                            .frame(maxHeight: 60)
+                        Spacer()
+                        Button {
+
+                        } label: {
+                            VStack {
+                                Image(systemName: "record.circle")
+                                Text("record")
+                            }
+                        }
+                        .padding(.horizontal, 8)
+
+                        Spacer()
+                        Divider()
+                            .frame(maxHeight: 60)
+                        Spacer()
+                        Button {
+
+                        } label: {
+                            VStack {
+                                Image(systemName: "waveform")
+                                Text("import")
+                            }
+                        }
                     }
-                    Spacer()
-                    Divider()
-                        .frame(maxHeight: 60)
-                    Spacer()
-                    VStack {
-                        Image(systemName: "record.circle")
-                        Text("record")
-                    }
-                    Spacer()
-                    Divider()
-                        .frame(maxHeight: 60)
-                    Spacer()
-                    VStack {
-                        Image(systemName: "waveform")
-                        Text("import")
-                    }
+                    .background(Color.white)
+                    // padding?
                 }
-                .background(Color.white)
-                // padding?
             }
         }
     }
@@ -98,13 +116,11 @@ struct HomeView: View {
             }
             HStack {
                 // Search bar
-                ZStack {
-                    TextField("Search for anything...", text: $searchBar)
-                        .background(Color.gray)
-                        .cornerRadius(Constants.defaultPadding)
-                        .padding(.horizontal, 8)
-                }
-                .frame(maxWidth: .infinity)
+                TextField("Search for anything...", text: $searchBar)
+                    .background(Color.gray)
+                    .cornerRadius(Constants.defaultPadding)
+                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity)
                     
                 Spacer()
                 
@@ -163,9 +179,80 @@ private struct WorkInProgressView: View {
     }
 }
 
+private struct WorkInProgressPlayerView: View {
+    let workInProgress: WorkInProgress
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Constants.defaultPadding)
+                .fill(Color.black)
+            VStack {
+                // Top
+                HStack {
+                    // Titie and count
+                    VStack {
+                        // Title
+                        Text("final mix")
+                            .foregroundColor(.white)
+                        // Count
+                        Text("00:23")
+                            .foregroundColor(.white)
+
+                    }
+                    Spacer()
+                    // Notes, Looper, Pause
+                    HStack {
+                        // Notes
+                        Image(systemName: "message.and.waveform")
+                            .foregroundColor(.white)
+
+                        // Looper
+                        Image(systemName: "repeat.1")
+                            .foregroundColor(.white)
+
+                        // Pause
+                        Image(systemName: "pause")
+                            .foregroundColor(.white)
+                    }
+                }
+                // Waveform view
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Color.white)
+                    .frame(height: 20)
+            }
+            .padding(Constants.defaultPadding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxHeight: 60)
+
+    }
+}
+
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+
+        HomeView(
+            user: User(
+                username: "itsdpark", worksInProgress: [
+                    WorkInProgress(
+                        title: "blank looks", creator: User(username: "itsdpark"),
+                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0
+                    ),
+                    WorkInProgress(
+                        title: "just one cig", creator: User(username: "itsdpark"),
+                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1
+                    ),
+                    WorkInProgress(
+                        title: "welcome to the way that you look at me", creator: User(username: "itsdpark"),
+                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2
+                    ),
+                    WorkInProgress(
+                        title: "random melody ideas", creator: User(username: "itsdpark"),
+                        dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3
+                    )
+                ]
+            )
+        )
     }
 }
 

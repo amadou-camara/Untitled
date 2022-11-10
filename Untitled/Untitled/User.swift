@@ -9,5 +9,5 @@ import Foundation
 
 struct User {
     let username: String
-//    let worksInProgress: [WorkInProgress]
+    var worksInProgress: [WorkInProgress]?
 }

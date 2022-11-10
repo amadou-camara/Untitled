@@ -8,6 +8,5 @@
 import Foundation
 
 struct Track {
-    
-    let layers: [Layer]
+    let id: Int
 }

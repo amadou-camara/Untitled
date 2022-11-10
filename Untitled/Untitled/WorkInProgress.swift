@@ -8,7 +8,8 @@
 import UIKit
 
 
-struct WorkInProgress {
+struct WorkInProgress: Identifiable {
+    
     enum Privacy {
         case openToAll
         case onlyYou
@@ -20,5 +21,6 @@ struct WorkInProgress {
     let dateCreated: Date
     let privacy: Privacy
     let playlists: [Playlist]
+    var id: Int
 //    let coverArt: UIImage?
 }

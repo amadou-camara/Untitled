@@ -10,8 +10,9 @@
 		0023D10A291C621C00EFE417 /* WorkInProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D109291C621C00EFE417 /* WorkInProgress.swift */; };
 		0023D10C291C627B00EFE417 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D10B291C627B00EFE417 /* Playlist.swift */; };
 		0023D10E291C62A400EFE417 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D10D291C62A400EFE417 /* Track.swift */; };
-		0023D110291C62E200EFE417 /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D10F291C62E200EFE417 /* Layer.swift */; };
 		0023D112291C6E9200EFE417 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D111291C6E9200EFE417 /* User.swift */; };
+		0023D114291C95F600EFE417 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D113291C95F600EFE417 /* HomeViewModel.swift */; };
+		0023D116291CBB7100EFE417 /* WorkInProgressDetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D115291CBB7100EFE417 /* WorkInProgressDetailedView.swift */; };
 		009B9E40291C5FC000DA5F4C /* UntitledApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009B9E3F291C5FC000DA5F4C /* UntitledApp.swift */; };
 		009B9E42291C5FC000DA5F4C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009B9E41291C5FC000DA5F4C /* ContentView.swift */; };
 		009B9E44291C5FC400DA5F4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 009B9E43291C5FC400DA5F4C /* Assets.xcassets */; };
@@ -23,8 +24,9 @@
 		0023D109291C621C00EFE417 /* WorkInProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInProgress.swift; sourceTree = "<group>"; };
 		0023D10B291C627B00EFE417 /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		0023D10D291C62A400EFE417 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
-		0023D10F291C62E200EFE417 /* Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
 		0023D111291C6E9200EFE417 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		0023D113291C95F600EFE417 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		0023D115291CBB7100EFE417 /* WorkInProgressDetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInProgressDetailedView.swift; sourceTree = "<group>"; };
 		009B9E3C291C5FC000DA5F4C /* Untitled.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Untitled.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		009B9E3F291C5FC000DA5F4C /* UntitledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntitledApp.swift; sourceTree = "<group>"; };
 		009B9E41291C5FC000DA5F4C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -72,7 +74,8 @@
 				0023D109291C621C00EFE417 /* WorkInProgress.swift */,
 				0023D10B291C627B00EFE417 /* Playlist.swift */,
 				0023D10D291C62A400EFE417 /* Track.swift */,
-				0023D10F291C62E200EFE417 /* Layer.swift */,
+				0023D113291C95F600EFE417 /* HomeViewModel.swift */,
+				0023D115291CBB7100EFE417 /* WorkInProgressDetailedView.swift */,
 			);
 			path = Untitled;
 			sourceTree = "<group>";
@@ -155,10 +158,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0023D116291CBB7100EFE417 /* WorkInProgressDetailedView.swift in Sources */,
 				009B9E4E291C604500DA5F4C /* HomeView.swift in Sources */,
+				0023D114291C95F600EFE417 /* HomeViewModel.swift in Sources */,
 				009B9E42291C5FC000DA5F4C /* ContentView.swift in Sources */,
 				0023D10A291C621C00EFE417 /* WorkInProgress.swift in Sources */,
-				0023D110291C62E200EFE417 /* Layer.swift in Sources */,
 				0023D112291C6E9200EFE417 /* User.swift in Sources */,
 				009B9E40291C5FC000DA5F4C /* UntitledApp.swift in Sources */,
 				0023D10C291C627B00EFE417 /* Playlist.swift in Sources */,
