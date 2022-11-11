@@ -13,6 +13,9 @@ private enum Constants {
 }
 
 struct WorkInProgressDetailedView: View {
+    
+    let dismissAction: () -> Void
+    
     var body: some View {
         content
     }
@@ -21,10 +24,9 @@ struct WorkInProgressDetailedView: View {
         GeometryReader { bounds in
             let safeAreaInsets = bounds.safeAreaInsets
             ScrollView(.vertical, showsIndicators: true) {
-                VStack {
-                    Text("Hello, world!")
-                        .foregroundColor(.white)
-
+                VStack(spacing: 20) {
+                    TrackCardView()
+                    TrackCardView()
                 }
                 .safeAreaInset(edge: .leading, spacing: 0) {
                     EmptyView().frame(width: safeAreaInsets.leading + Constants.defaultPadding)
@@ -53,7 +55,7 @@ struct WorkInProgressDetailedView: View {
             HStack {
                 // Close
                 Button {
-                    
+                    dismissAction()
                 } label: {
                     Image(systemName: "xmark")
                 }
@@ -143,6 +145,58 @@ struct WorkInProgressDetailedView: View {
                 }
             }
         }
+    }
+}
+
+private struct TrackCardView: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                .fill(Color.blue)
+            VStack {
+                // Top row
+                HStack {
+                    Text("instrumental")
+                        .foregroundColor(.white)
+                    Spacer()
+                    HStack {
+                        // mute
+                        Button {
+                            
+                        } label: {
+                            // Change label if track is not muted
+                            Image(systemName: "speaker.slash")
+                                .foregroundColor(.white)
+                        }
+                        // headphones
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "headphones")
+                                .foregroundColor(.white)
+
+                        }
+                        
+                        // equilizer
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "music.quarternote.3")
+                                .foregroundColor(.white)
+
+                        }
+                    }
+                }
+                // Waveform view
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Color.white)
+                    .frame(height: 20)
+            }
+            .padding(Constants.defaultPadding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxHeight: 60)
+        .padding(.bottom, Constants.defaultPadding)
     }
 }
 

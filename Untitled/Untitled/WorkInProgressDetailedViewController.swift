@@ -13,7 +13,10 @@ class WorkInProgressDetailedViewController: UIViewController {
     let user: User
     
     lazy var bridge: UIViewController = {
-        let rootView = WorkInProgressDetailedView()
+        let rootView = WorkInProgressDetailedView() { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+        }
         
         return UIHostingController(rootView: rootView)
     }()

@@ -15,6 +15,11 @@ private enum Constants {
 struct HomeView: View {
     @State private var searchBar: String = ""
     
+    // Gray 1 Color rgba(39, 39, 39, 255) Main background
+    // Gray 2 Color rgba(58, 58, 58, 255) Button backgrounds, track off color
+    // Gray 3 Color rgba(239, 239, 239, 255)
+    // Search bar, Add, profile background Color rgba(243, 243, 243, 255)
+    // Primary text color rgba(109, 109, 109, 255)
     let viewModel: HomeViewModel
     let openDetails: () -> Void
 
@@ -181,7 +186,7 @@ private struct WorkInProgressPlayerView: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: Constants.defaultPadding)
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
                 .fill(Color.black)
             VStack {
                 // Top
