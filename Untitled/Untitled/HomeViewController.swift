@@ -37,6 +37,13 @@ public final class HomeViewController: UIViewController {
         bridge.view.frame = view.bounds
         view.addSubview(bridge.view)
         bridge.didMove(toParent: self)
+        
+        for family: String in UIFont.familyNames {
+            print(family)
+            for names: String in UIFont.fontNames(forFamilyName: family) {
+                print("== \(names)")
+            }
+        }
     }
     
     func openWorkInProgressDetail() {

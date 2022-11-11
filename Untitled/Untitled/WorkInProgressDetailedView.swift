@@ -46,7 +46,7 @@ struct WorkInProgressDetailedView: View {
 
             }
         }
-        .background(.black)
+        .background(Color(red: 39/255, green: 39/255, blue: 39/255))
     }
     
     private var header: some View {
@@ -200,3 +200,8 @@ private struct TrackCardView: View {
     }
 }
 
+struct WorkInProgressDetailedView_Previews: PreviewProvider {
+    static var previews: some View {
+        WorkInProgressDetailedView(dismissAction: {})
+    }
+}

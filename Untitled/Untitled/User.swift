@@ -10,4 +10,5 @@ import Foundation
 struct User {
     let username: String
     var worksInProgress: [WorkInProgress]?
+    let notifications = ["Notification", "Notification", "Notification", "Notification"]
 }

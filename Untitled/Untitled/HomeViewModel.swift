@@ -14,6 +14,10 @@ class HomeViewModel: ObservableObject {
         user.worksInProgress
     }
     
+    var notifications: [String] {
+        user.notifications
+    }
+    
     init(user: User) {
         self.user = user
     }

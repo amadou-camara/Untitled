@@ -19,6 +19,7 @@
 		0023D147291D40DB00EFE417 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D13F291D40DB00EFE417 /* HomeViewModel.swift */; };
 		0023D148291D40DB00EFE417 /* WorkInProgressDetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D140291D40DB00EFE417 /* WorkInProgressDetailedView.swift */; };
 		0023D14A291D465D00EFE417 /* WorkInProgressDetailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0023D149291D465C00EFE417 /* WorkInProgressDetailedViewController.swift */; };
+		0023D161291E9A9700EFE417 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 0023D14B291E95E300EFE417 /* fonts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		0023D13F291D40DB00EFE417 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		0023D140291D40DB00EFE417 /* WorkInProgressDetailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkInProgressDetailedView.swift; sourceTree = "<group>"; };
 		0023D149291D465C00EFE417 /* WorkInProgressDetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInProgressDetailedViewController.swift; sourceTree = "<group>"; };
+		0023D14B291E95E300EFE417 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		0023D124291D3E7F00EFE417 /* Untitled */ = {
 			isa = PBXGroup;
 			children = (
+				0023D14B291E95E300EFE417 /* fonts */,
 				0023D125291D3E7F00EFE417 /* AppDelegate.swift */,
 				0023D127291D3E7F00EFE417 /* SceneDelegate.swift */,
 				0023D13D291D40DA00EFE417 /* HomeView.swift */,
@@ -143,6 +146,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0023D161291E9A9700EFE417 /* fonts in Resources */,
 				0023D12F291D3E8700EFE417 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,6 +10,7 @@ import SwiftUI
 private enum Constants {
     static let defaultPadding: CGFloat = 16
     static let cornerRadius: CGFloat = 8
+    static let coverArtSize: CGFloat = 60
 }
 
 struct HomeView: View {
@@ -35,7 +36,6 @@ struct HomeView: View {
                     if let worksInProgress = viewModel.worksInProgress {
                         ForEach(worksInProgress) { workInProgress in
                             WorkInProgressView(workInProgress: workInProgress)
-                            
                         }
                     }
                 }
@@ -51,57 +51,7 @@ struct HomeView: View {
                 header
             }
             .safeAreaInset(edge: .bottom) {
-                // Update this
-                VStack {
-                    WorkInProgressPlayerView(workInProgress: viewModel.worksInProgress![0])
-                        .padding(.vertical, Constants.defaultPadding)
-                        .padding(.horizontal, Constants.defaultPadding)
-                        .onTapGesture {
-                            openDetails()
-                        }
-                    HStack {
-                        Button {
-
-                        } label: {
-                            VStack {
-                                Image(systemName: "textformat")
-                                Text("write")
-                            }
-                        }
-                        .padding(.horizontal, 8)
-
-
-                        Spacer()
-                        Divider()
-                            .frame(maxHeight: 60)
-                        Spacer()
-                        Button {
-
-                        } label: {
-                            VStack {
-                                Image(systemName: "circle.fill")
-                                    .foregroundColor(.red)
-                                Text("record")
-                            }
-                        }
-                        .padding(.horizontal, 8)
-
-                        Spacer()
-                        Divider()
-                            .frame(maxHeight: 60)
-                        Spacer()
-                        Button {
-
-                        } label: {
-                            VStack {
-                                Image(systemName: "waveform")
-                                Text("import")
-                            }
-                        }
-                    }
-                    .background(Color.white)
-                    // padding?
-                }
+                footer
             }
         }
     }
@@ -111,35 +61,106 @@ struct HomeView: View {
             HStack {
                 Text("[untitled]")
                 Spacer()
-                HStack {
-                    Image(systemName: "number.circle.fill")
-                    Image(systemName: "person.fill")
+                HStack (spacing: 10) {
+                    Button {
+                        
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill()
+                                .foregroundColor(.black)
+                            Text("\(viewModel.notifications.count)")
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 30, height: 30)
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill()
+                                .foregroundColor(Color(red: 243/255, green: 243/255, blue: 243/255))
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.black)
+                        }
+                        .frame(width: 30, height: 30)
+                    }
                 }
             }
-            HStack {
+            HStack (spacing: 10) {
                 // Search bar
                 TextField("Search for anything...", text: $searchBar)
-                    .background(Color.gray)
-                    .cornerRadius(Constants.defaultPadding)
-                    .padding(.horizontal, 8)
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background((Color(red: 243/255, green: 243/255, blue: 243/255)))
+                    .cornerRadius(Constants.cornerRadius)
                     
                 Spacer()
                 
                 // Add button
-                Button {
+                ZStack {
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                        .fill(Color(red: 243/255, green: 243/255, blue: 243/255))
+                        .frame(width: 80, height: 40)
                     
-                } label: {
-                    HStack {
-                        Image(systemName: "plus")
-                        Text("Add")
+                    Button {
+                        
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("Add")
+                        }
                     }
+                    .foregroundColor(.black)
                 }
-                .padding(.horizontal, 8)
             }
         }
+        .padding(.horizontal, Constants.defaultPadding)
+        .padding(.bottom, 5)
         .background(Color.white)
         .frame(maxWidth: .infinity)
+    }
+    
+    private var footer: some View {
+        // Update this
+        VStack {
+            // If something playing animate as slide up from behind HStack
+            WorkInProgressPlayerView(workInProgress: viewModel.worksInProgress![0])
+                .onTapGesture {
+                    openDetails()
+                }
+            
+            VStack {
+                Divider()
+                HStack {
+                    
+                    footerButton(image: Image(systemName: "textformat"), text: "write")
+                    Divider()
+                    footerButton(image: Image(systemName: "circle.fill").foregroundColor(.red)
+                                 , text: "record")
+                    Divider()
+                    footerButton(image: Image(systemName: "waveform"), text: "import")
+                }
+                .frame(maxWidth: .infinity, maxHeight: 80)
+                .background(Color.white)
+            }
+        }
+    }
+        
+    func footerButton(image: some View, text: String) -> some View {
+        return (
+            Button {
+            
+            } label: {
+                VStack(spacing: 20) {
+                    image
+                        .frame(width: 60, height: 60)
+                    Text("\(text)")
+                }
+            }
+            .foregroundColor(Color(red: 58/255, green: 58/255, blue: 58/255))
+        )
     }
 }
 
@@ -148,24 +169,56 @@ private struct WorkInProgressView: View {
     
     var body: some View {
         
-        HStack {
+        HStack(){
             coverArt
-                .padding(4)
+                .padding(.trailing, 10)
             textArea
+                .padding(.trailing, 10)
             Spacer()
             Image(systemName: "chevron.right")
+                .padding(.trailing, Constants.defaultPadding)
         }
-        .padding(Constants.defaultPadding)
+        .padding(6)
         .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .strokeBorder(Color.gray, lineWidth: 1)
+                .strokeBorder(Color(red: 58/255, green: 58/255, blue: 58/255), lineWidth: 0.5)
         )
     }
     
     private var coverArt: some View {
-        RoundedRectangle(cornerRadius: Constants.cornerRadius)
-            .frame(width: 60, height: 60)
+        // turn off highlighting on tap
+        Button {
+            // Play / show player for current playlist
+            print("play")
+        } label: {
+            ZStack {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill()
+                    .foregroundColor(.blue)
+                    .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+                ZStack (alignment: .center){
+                    // if WIP not playing
+                    Circle()
+                        .fill()
+                        .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
+                        .frame(width: 40, height: 40)
+
+                    Image(systemName: "play.fill")
+                        .foregroundColor(.white)
+                        .frame(width: 15, height: 15)
+                    // if WIP playing
+//                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
+//                        .fill()
+//                        .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
+//                        .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+//
+//                    Image(systemName: "waveform")
+//                        .foregroundColor(.white)
+//                        .frame(width: 15, height: 15)
+                }
+            }
+        }
     }
     
     private var textArea: some View {
@@ -187,23 +240,22 @@ private struct WorkInProgressPlayerView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .fill(Color.black)
-            VStack {
+                .fill(Color(red: 39/255, green: 39/255, blue: 39/255))
+            VStack(spacing: 10) {
                 // Top
                 HStack {
                     // Titie and count
-                    VStack {
+                    VStack(alignment: .leading){
                         // Title
                         Text("final mix")
                             .foregroundColor(.white)
                         // Count
                         Text("00:23")
                             .foregroundColor(.white)
-
                     }
                     Spacer()
                     // Notes, Looper, Pause
-                    HStack {
+                    HStack(spacing: 40) {
                         // Notes
                         Image(systemName: "message.and.waveform")
                             .foregroundColor(.white)
@@ -217,16 +269,19 @@ private struct WorkInProgressPlayerView: View {
                             .foregroundColor(.white)
                     }
                 }
+                .padding(.top, Constants.defaultPadding)
+                .padding(.horizontal, Constants.defaultPadding)
                 // Waveform view
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .fill(Color.white)
                     .frame(height: 20)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
             }
-            .padding(Constants.defaultPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxHeight: 60)
-        .padding(.bottom, Constants.defaultPadding)
+        .padding(.horizontal, Constants.defaultPadding)
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
 
     }
