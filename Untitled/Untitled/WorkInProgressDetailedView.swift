@@ -25,9 +25,11 @@ struct WorkInProgressDetailedView: View {
             let safeAreaInsets = bounds.safeAreaInsets
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(spacing: 20) {
-                    TrackCardView()
-                    TrackCardView()
+                    TrackCardView(trackName: "Track")
+                    TrackCardView(trackName: "instrumental")
+                    TrackCardView(trackName: "vocals")
                 }
+                .padding(.top, 20)
                 .safeAreaInset(edge: .leading, spacing: 0) {
                     EmptyView().frame(width: safeAreaInsets.leading + Constants.defaultPadding)
                 }
@@ -37,13 +39,17 @@ struct WorkInProgressDetailedView: View {
                 Spacer()
             }
             .safeAreaInset(edge: .top) {
-                header
+                VStack {
+                    header
+                    Divider()
+                        .overlay(.white)
+                }
+                .background(Color(red: 39/255, green: 39/255, blue: 39/255))
             }
             .safeAreaInset(edge: .bottom) {
                 stickyFooter
-                    .frame(maxHeight: 60)
-
-
+                    .frame(maxHeight: 120)
+                    .background(Color(red: 39/255, green: 39/255, blue: 39/255))
             }
         }
         .background(Color(red: 39/255, green: 39/255, blue: 39/255))
@@ -57,28 +63,48 @@ struct WorkInProgressDetailedView: View {
                 Button {
                     dismissAction()
                 } label: {
-                    Image(systemName: "xmark")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                            .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
+                            .frame(maxWidth: 60, maxHeight: 25)
+                        Image(systemName: "xmark")
+                            .frame(width: 15, height: 15)
+                    }
                 }
                 Spacer()
                 // Share
                 Button {
                     
                 } label: {
-                    Image(systemName: "square.and.arrow.up")
+                    ZStack {
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                            .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
+                            .frame(maxWidth: 60, maxHeight: 25)
+                        Image(systemName: "square.and.arrow.up")
+                            .frame(width: 15, height: 15)
+                    }
                 }
             }
+            .padding(.horizontal, Constants.defaultPadding)
+            .padding(.bottom, 20)
             HStack {
                 // Information
                 VStack(alignment: .leading) {
                     // first line
                     HStack {
                         // title
-                        Text("final version")
+                        Text("final mix")
                         // more info button
                         Button {
                             
                         } label: {
-                            Image(systemName: "chevron.down")
+                            ZStack {
+                                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                                    .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
+                                    .frame(maxWidth: 60, maxHeight: 25)
+                                Image(systemName: "chevron.down")
+                                    .frame(width: 15, height: 15)
+                            }
                         }
                     }
                     // detail line
@@ -95,60 +121,98 @@ struct WorkInProgressDetailedView: View {
                     Image(systemName: "square.and.arrow.down")
                 }
             }
-            Divider()
+            .padding(.bottom, 5)
         }
         .foregroundColor(.white)
+        .padding(.horizontal, Constants.defaultPadding)
     }
     
     private var stickyFooter: some View {
         VStack {
             Divider()
+                .overlay(.white)
+                .padding(.bottom, 3)
+                .frame(maxWidth: .infinity)
+            
             // Waveform
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
                 .fill(Color.white)
                 .frame(height: 20)
+                .padding(.horizontal, Constants.defaultPadding)
+
+            Divider()
+                .overlay(.white)
+                .padding(.vertical, 3)
+                .frame(maxWidth: .infinity)
+
             // Times
             HStack {
                 Text("00:00")
                 Spacer()
                 Text("03:37")
             }
+            .padding(.horizontal, Constants.defaultPadding / 2)
+
             // Butoons
             HStack {
                 // Notes
-                Image(systemName: "message.and.waveform")
-                    .foregroundColor(.white)
+                createSoloButtons(imageName: "message.and.waveform")
                 
                 Spacer()
                 // Right Buttons
-                HStack {
+                HStack(spacing: 10) {
                     // Three buttons
                     HStack {
                         // Back Button
-                        Image(systemName: "backward.end")
-                            .foregroundColor(.white)
+                        createSoloButtons(imageName: "backward.end")
                         Divider()
+                            .overlay(.white)
+                            .frame(maxHeight: 40)
+
                         // Stop Button
-                        Image(systemName: "stop")
-                            .foregroundColor(.white)
+                        createSoloButtons(imageName: "stop")
+                       
                         Divider()
+                            .overlay(.white)
+                            .frame(maxHeight: 40)
+
                         // Record button
-                        Image(systemName: "circle.fill")
-                            .foregroundColor(.red)
+                        createSoloButtons(imageName: "circle.fill", color: .red)
                     }
+                    .frame(maxHeight: 40)
+                    .background(Color(red: 58/255, green: 58/255, blue: 58/255))
+                    .cornerRadius(Constants.cornerRadius)
+
                     // Timer Button
-                    Image(systemName: "speedometer")
-                        .foregroundColor(.white)
+                    createSoloButtons(imageName: "speedometer")
                     //Expand Button
-                    Image(systemName: "arrow.left.and.line.vertical.and.arrow.right")
-                        .foregroundColor(.white)
+                    createSoloButtons(imageName: "arrow.left.and.line.vertical.and.arrow.right")
                 }
             }
+            .padding(.horizontal, Constants.defaultPadding)
+
         }
+        .foregroundColor(.white)
+    }
+    
+    func createSoloButtons(imageName: String, color: Color = .white) -> some View{
+        return (
+            ZStack {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
+                    .frame(width: 40, height: 40)
+                Image(systemName: "\(imageName)")
+                    .foregroundColor(color)
+                    .frame(width: 30, height: 30)
+            }
+        )
+        
     }
 }
 
 private struct TrackCardView: View {
+    let trackName: String
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
@@ -156,10 +220,10 @@ private struct TrackCardView: View {
             VStack {
                 // Top row
                 HStack {
-                    Text("instrumental")
+                    Text(trackName)
                         .foregroundColor(.white)
                     Spacer()
-                    HStack {
+                    HStack(spacing: 40) {
                         // mute
                         Button {
                             

@@ -14,7 +14,7 @@ private enum Constants {
 }
 
 struct HomeView: View {
-    @State private var searchBar: String = ""
+    @State private var searchBarText: String = ""
     
     // Gray 1 Color rgba(39, 39, 39, 255) Main background
     // Gray 2 Color rgba(58, 58, 58, 255) Button backgrounds, track off color
@@ -56,6 +56,22 @@ struct HomeView: View {
         }
     }
     
+    private var searchBar: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(Color(red: 243/255, green: 243/255, blue: 243/255))
+            HStack {
+                Image(systemName: "magnifyingglass")
+                TextField("Search for anything...", text: $searchBarText)
+            }
+            .foregroundColor(Color(red: 109/255, green: 109/255, blue: 109/255))
+            .padding(.leading, 10)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 40)
+        .cornerRadius(Constants.cornerRadius)
+    }
+    
     private var header: some View {
         VStack {
             HStack {
@@ -91,10 +107,7 @@ struct HomeView: View {
             }
             HStack (spacing: 10) {
                 // Search bar
-                TextField("Search for anything...", text: $searchBar)
-                    .frame(maxWidth: .infinity, minHeight: 40)
-                    .background((Color(red: 243/255, green: 243/255, blue: 243/255)))
-                    .cornerRadius(Constants.cornerRadius)
+                searchBar
                     
                 Spacer()
                 
@@ -134,7 +147,6 @@ struct HomeView: View {
             VStack {
                 Divider()
                 HStack {
-                    
                     footerButton(image: Image(systemName: "textformat"), text: "write")
                     Divider()
                     footerButton(image: Image(systemName: "circle.fill").foregroundColor(.red)
@@ -245,7 +257,7 @@ private struct WorkInProgressPlayerView: View {
                 // Top
                 HStack {
                     // Titie and count
-                    VStack(alignment: .leading){
+                    VStack(alignment: .leading) {
                         // Title
                         Text("final mix")
                             .foregroundColor(.white)
@@ -282,6 +294,7 @@ private struct WorkInProgressPlayerView: View {
         }
         .frame(maxHeight: 60)
         .padding(.horizontal, Constants.defaultPadding)
+        .padding(.bottom, Constants.defaultPadding)
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
 
     }
