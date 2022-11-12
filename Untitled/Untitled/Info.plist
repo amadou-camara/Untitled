@@ -4,16 +4,17 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>UntitledSans-Black.otf</string>
-		<string>UntitledSans-BlackItalic.otf</string>
-		<string>UntitledSans-Bold.otf</string>
-		<string>UntitledSans-BoldItalic.otf</string>
-		<string>UntitledSans-Light.otf</string>
-		<string>UntitledSans-LightItalic.otf</string>
-		<string>UntitledSans-Medium.otf</string>
-		<string>UntitledSans-MediumItalic.otf</string>
-		<string>UntitledSans-Regular.otf</string>
-		<string>UntitledSans-RegularItalic.otf</string>
+		<string>fonts/UntitledSans-Black.otf</string>
+		<string>fonts/UntitledSans-BlackItalic.otf</string>
+		<string>fonts/UntitledSans-Bold.otf</string>
+		<string>fonts/UntitledSans-BoldItalic.otf</string>
+		<string>fonts/UntitledSans-Light.otf</string>
+		<string>fonts/UntitledSans-LightItalic.otf</string>
+		<string>fonts/UntitledSans-Medium.otf</string>
+		<string>fonts/UntitledSans-MediumItalic.otf</string>
+		<string>fonts/UntitledSans-Regular.otf</string>
+		<string>fonts/UntitledSans-RegularItalic.otf</string>
+		<string>fonts/MajorMonoDisplay-Regular.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

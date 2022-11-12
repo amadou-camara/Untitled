@@ -15,12 +15,7 @@ private enum Constants {
 
 struct HomeView: View {
     @State private var searchBarText: String = ""
-    
-    // Gray 1 Color rgba(39, 39, 39, 255) Main background
-    // Gray 2 Color rgba(58, 58, 58, 255) Button backgrounds, track off color
-    // Gray 3 Color rgba(239, 239, 239, 255)
-    // Search bar, Add, profile background Color rgba(243, 243, 243, 255)
-    // Primary text color rgba(109, 109, 109, 255)
+
     let viewModel: HomeViewModel
     let openDetails: () -> Void
 
@@ -62,9 +57,12 @@ struct HomeView: View {
                 .foregroundColor(Color(red: 243/255, green: 243/255, blue: 243/255))
             HStack {
                 Image(systemName: "magnifyingglass")
+                    .foregroundColor(Color(red: 38/255, green: 38/255, blue: 38/255))
+
                 TextField("Search for anything...", text: $searchBarText)
+                    .font(Font.custom("UntitledSans-Regular", size: 12))
+                    .foregroundColor(Color(red: 127/255, green: 127/255, blue: 127/255))
             }
-            .foregroundColor(Color(red: 109/255, green: 109/255, blue: 109/255))
             .padding(.leading, 10)
         }
         .frame(maxWidth: .infinity)
@@ -76,6 +74,8 @@ struct HomeView: View {
         VStack {
             HStack {
                 Text("[untitled]")
+                    .font(Font.custom("UntitledSans-Regular", size: 20))
+                    .foregroundColor(Color(red: 38/255, green: 38/255, blue: 38/255))
                 Spacer()
                 HStack (spacing: 10) {
                     Button {
@@ -123,9 +123,10 @@ struct HomeView: View {
                         HStack {
                             Image(systemName: "plus")
                             Text("Add")
+                                .font(Font.custom("UntitledSans-Regular", size: 15))
                         }
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(Color(red: 38/255, green: 38/255, blue: 38/255))
                 }
             }
         }
@@ -147,31 +148,35 @@ struct HomeView: View {
             VStack {
                 Divider()
                 HStack {
-                    footerButton(image: Image(systemName: "textformat"), text: "write")
+                    footerButton(imageName: "textformat", text: "write")
                     Divider()
-                    footerButton(image: Image(systemName: "circle.fill").foregroundColor(.red)
-                                 , text: "record")
+                    footerButton(imageName: "circle.fill", text: "record", color: .red)
                     Divider()
-                    footerButton(image: Image(systemName: "waveform"), text: "import")
+                    footerButton(imageName: "waveform", text: "import")
                 }
-                .frame(maxWidth: .infinity, maxHeight: 80)
                 .background(Color.white)
             }
+            .frame(maxWidth: .infinity, maxHeight: 80)
         }
     }
         
-    func footerButton(image: some View, text: String) -> some View {
+    func footerButton(imageName: String, text: String, color: Color = Color(red: 58/255, green: 58/255, blue: 58/255)) -> some View {
         return (
             Button {
             
             } label: {
                 VStack(spacing: 20) {
-                    image
-                        .frame(width: 60, height: 60)
+                    Image(systemName: imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(color)
+                        .frame(width: 30, height: 30)
                     Text("\(text)")
+                        .font(Font.custom("UntitledSans-Regular", size: 14))
+                        .foregroundColor(Color(red: 127/255, green: 127/255, blue: 127/255))
                 }
             }
-            .foregroundColor(Color(red: 58/255, green: 58/255, blue: 58/255))
+            .frame(maxWidth: .infinity)
         )
     }
 }
@@ -188,13 +193,15 @@ private struct WorkInProgressView: View {
                 .padding(.trailing, 10)
             Spacer()
             Image(systemName: "chevron.right")
+                .foregroundColor(Color(red: 38/255, green: 38/255, blue: 38/255))
+                .frame(maxHeight: 20)
                 .padding(.trailing, Constants.defaultPadding)
         }
         .padding(6)
         .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .strokeBorder(Color(red: 58/255, green: 58/255, blue: 58/255), lineWidth: 0.5)
+                .strokeBorder(Color(red: 232/255, green: 232/255, blue: 232/255), lineWidth: 1)
         )
     }
     
@@ -238,10 +245,11 @@ private struct WorkInProgressView: View {
             Text(workInProgress.title)
                 .lineLimit(1)
                 .truncationMode(.tail)
-            HStack {
-                Text(workInProgress.creator.username)
-                // Dot separator + Date + Privacy?
-            }
+                .font(Font.custom("UntitledSans-Regular", size: 15))
+                .foregroundColor(Color(red: 38/255, green: 38/255, blue: 38/255))
+            Text("\(workInProgress.creator.username) • 5d")
+                .font(Font.custom("UntitledSans-Regular", size: 12))
+                .foregroundColor(Color(red: 127/255, green: 127/255, blue: 127/255))
         }
     }
 }
@@ -260,10 +268,13 @@ private struct WorkInProgressPlayerView: View {
                     VStack(alignment: .leading) {
                         // Title
                         Text("final mix")
+                            .font(Font.custom("UntitledSans-Regular", size: 14))
                             .foregroundColor(.white)
+
                         // Count
                         Text("00:23")
-                            .foregroundColor(.white)
+                            .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
+                            .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
                     }
                     Spacer()
                     // Notes, Looper, Pause

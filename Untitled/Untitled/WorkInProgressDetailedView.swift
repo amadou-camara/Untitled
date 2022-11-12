@@ -68,6 +68,8 @@ struct WorkInProgressDetailedView: View {
                             .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
                             .frame(maxWidth: 60, maxHeight: 25)
                         Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: 15, height: 15)
                     }
                 }
@@ -81,12 +83,14 @@ struct WorkInProgressDetailedView: View {
                             .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
                             .frame(maxWidth: 60, maxHeight: 25)
                         Image(systemName: "square.and.arrow.up")
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: 15, height: 15)
                     }
                 }
             }
             .padding(.horizontal, Constants.defaultPadding)
-            .padding(.bottom, 20)
+            .padding(.bottom, 10)
             HStack {
                 // Information
                 VStack(alignment: .leading) {
@@ -94,6 +98,9 @@ struct WorkInProgressDetailedView: View {
                     HStack {
                         // title
                         Text("final mix")
+                            .font(Font.custom("UntitledSans-Regular", size: 18))
+                            .foregroundColor(.white)
+
                         // more info button
                         Button {
                             
@@ -103,6 +110,8 @@ struct WorkInProgressDetailedView: View {
                                     .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
                                     .frame(maxWidth: 60, maxHeight: 25)
                                 Image(systemName: "chevron.down")
+                                    .resizable()
+                                    .scaledToFit()
                                     .frame(width: 15, height: 15)
                             }
                         }
@@ -110,6 +119,9 @@ struct WorkInProgressDetailedView: View {
                     // detail line
                     HStack {
                         Text("itsdpark • 1hr • Only you")
+                            .font(Font.custom("UntitledSans-Regular", size: 14))
+                            .foregroundColor(Color(red: 127/255, green: 127/255, blue: 127/255))
+
                     }
                     
                 }
@@ -148,8 +160,14 @@ struct WorkInProgressDetailedView: View {
             // Times
             HStack {
                 Text("00:00")
+                    .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
+                    .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
+
                 Spacer()
                 Text("03:37")
+                    .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
+                    .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
+
             }
             .padding(.horizontal, Constants.defaultPadding / 2)
 
@@ -221,6 +239,7 @@ private struct TrackCardView: View {
                 // Top row
                 HStack {
                     Text(trackName)
+                        .font(Font.custom("UntitledSans-Regular", size: 14))
                         .foregroundColor(.white)
                     Spacer()
                     HStack(spacing: 40) {
@@ -247,16 +266,19 @@ private struct TrackCardView: View {
                         } label: {
                             Image(systemName: "music.quarternote.3")
                                 .foregroundColor(.white)
-
                         }
                     }
                 }
+                .padding(.horizontal, Constants.defaultPadding)
+                .padding(.top, Constants.defaultPadding)
+
                 // Waveform view
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .fill(Color.white)
                     .frame(height: 20)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
             }
-            .padding(Constants.defaultPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxHeight: 60)
