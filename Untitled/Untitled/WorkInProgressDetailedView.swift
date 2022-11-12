@@ -90,7 +90,8 @@ struct WorkInProgressDetailedView: View {
                 }
             }
             .padding(.horizontal, Constants.defaultPadding)
-            .padding(.bottom, 10)
+            .padding(.bottom, 20)
+
             HStack {
                 // Information
                 VStack(alignment: .leading) {
@@ -100,7 +101,6 @@ struct WorkInProgressDetailedView: View {
                         Text("final mix")
                             .font(Font.custom("UntitledSans-Regular", size: 18))
                             .foregroundColor(.white)
-
                         // more info button
                         Button {
                             
