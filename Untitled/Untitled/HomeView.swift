@@ -16,8 +16,10 @@ private enum Constants {
 struct HomeView: View {
     @State private var searchBarText: String = ""
 
-    let viewModel: HomeViewModel
-    let openDetails: () -> Void
+    @ObservedObject var viewModel: HomeViewModel
+    let playAction: (WorkInProgress, Playlist) -> Void
+    let pauseAction: (WorkInProgress, Playlist) -> Void
+    let openDetailsAction: (WorkInProgress, Playlist) -> Void
 
     var body: some View {
         content
@@ -30,7 +32,7 @@ struct HomeView: View {
                 VStack {
                     if let worksInProgress = viewModel.worksInProgress {
                         ForEach(worksInProgress) { workInProgress in
-                            WorkInProgressView(workInProgress: workInProgress)
+                            WorkInProgressView(viewModel: viewModel, workInProgress: workInProgress, playAction: playAction, pauseAction: pauseAction)
                         }
                     }
                 }
@@ -140,11 +142,13 @@ struct HomeView: View {
         // Update this
         VStack {
             // If something playing animate as slide up from behind HStack
-            WorkInProgressPlayerView(workInProgress: viewModel.worksInProgress![0])
-                .onTapGesture {
-                    openDetails()
-                }
-            
+            if let currentWorkInProgress = viewModel.currentWorkInProgress,
+                let currentPlaylist = viewModel.currentPlaylist {
+                WorkInProgressPlayerView(viewModel: viewModel, workInProgress: currentWorkInProgress)
+                    .onTapGesture {
+                        openDetailsAction(currentWorkInProgress, currentPlaylist)
+                    }
+            }
             VStack {
                 Divider()
                 HStack {
@@ -182,8 +186,11 @@ struct HomeView: View {
 }
 
 private struct WorkInProgressView: View {
-    let workInProgress: WorkInProgress
-    
+    @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var workInProgress: WorkInProgress
+    let playAction: (WorkInProgress, Playlist) -> Void
+    let pauseAction: (WorkInProgress, Playlist) -> Void
+
     var body: some View {
         
         HStack(){
@@ -209,34 +216,65 @@ private struct WorkInProgressView: View {
         // turn off highlighting on tap
         Button {
             // Play / show player for current playlist
-            print("play")
+            if viewModel.currentWorkInProgress == nil {
+                if let playlist = workInProgress.playlists?[0] {
+                    playAction(workInProgress, playlist)
+                    viewModel.currentWorkInProgress = workInProgress
+                }
+                return
+            }
+            
+            if viewModel.currentWorkInProgress == workInProgress {
+                if workInProgress.isPlaying {
+                    if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
+                        pauseAction(workInProgress, playlist)
+                    }
+                } else {
+                    if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
+                        playAction(workInProgress, playlist)
+                    }
+                }
+            } else {
+                // Stop currentWork
+                guard let currentWorkInProgress = viewModel.currentWorkInProgress, let currentPlaylist = viewModel.currentPlaylist else { return }
+                pauseAction(currentWorkInProgress, currentPlaylist)
+                
+                // play new work in progress
+                if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
+                    playAction(workInProgress, playlist)
+                }
+            }
         } label: {
             ZStack {
+                // Will be updated with image
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .fill()
                     .foregroundColor(.blue)
                     .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
-                ZStack (alignment: .center){
-                    // if WIP not playing
-                    Circle()
+            
+                if workInProgress.isPlaying {
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
                         .fill()
                         .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
-                        .frame(width: 40, height: 40)
+                        .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
 
-                    Image(systemName: "play.fill")
+                    Image(systemName: "waveform")
                         .foregroundColor(.white)
                         .frame(width: 15, height: 15)
-                    // if WIP playing
-//                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
-//                        .fill()
-//                        .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
-//                        .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
-//
-//                    Image(systemName: "waveform")
-//                        .foregroundColor(.white)
-//                        .frame(width: 15, height: 15)
+                } else {
+                    ZStack(alignment: .center) {
+                        Circle()
+                            .fill()
+                            .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
+                            .frame(width: 40, height: 40)
+                        
+                        Image(systemName: "play.fill")
+                            .foregroundColor(.white)
+                            .frame(width: 15, height: 15)
+                    }
                 }
             }
+            .animation(.easeInOut(duration: 10), value: viewModel.worksInProgress)
         }
     }
     
@@ -255,85 +293,87 @@ private struct WorkInProgressView: View {
 }
 
 private struct WorkInProgressPlayerView: View {
-    let workInProgress: WorkInProgress
+    @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var workInProgress: WorkInProgress
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .fill(Color(red: 39/255, green: 39/255, blue: 39/255))
-            VStack(spacing: 10) {
-                // Top
-                HStack {
-                    // Titie and count
-                    VStack(alignment: .leading) {
-                        // Title
-                        Text("final mix")
-                            .font(Font.custom("UntitledSans-Regular", size: 14))
-                            .foregroundColor(.white)
-
-                        // Count
-                        Text("00:23")
-                            .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
-                            .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
-                    }
-                    Spacer()
-                    // Notes, Looper, Pause
-                    HStack(spacing: 40) {
-                        // Notes
-                        Image(systemName: "message.and.waveform")
-                            .foregroundColor(.white)
-
-                        // Looper
-                        Image(systemName: "repeat.1")
-                            .foregroundColor(.white)
-
-                        // Pause
-                        Image(systemName: "pause")
-                            .foregroundColor(.white)
-                    }
-                }
-                .padding(.top, Constants.defaultPadding)
-                .padding(.horizontal, Constants.defaultPadding)
-                // Waveform view
+        if workInProgress.isPlaying, let currentPlaylist = viewModel.currentPlaylist {
+            ZStack {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                    .fill(Color.white)
-                    .frame(height: 20)
-                    .padding(.horizontal, 4)
-                    .padding(.bottom, 4)
+                    .fill(Color(red: 39/255, green: 39/255, blue: 39/255))
+                VStack(spacing: 10) {
+                    // Top
+                    HStack {
+                        // Titie and count
+                        VStack(alignment: .leading) {
+                            // Title
+                            Text(currentPlaylist.name)
+                                .font(Font.custom("UntitledSans-Regular", size: 14))
+                                .foregroundColor(.white)
+                            
+                            // Count
+                            Text("00:23")
+                                .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
+                                .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
+                        }
+                        Spacer()
+                        // Notes, Looper, Pause
+                        HStack(spacing: 40) {
+                            // Notes
+                            Image(systemName: "message.and.waveform")
+                                .foregroundColor(.white)
+                            
+                            // Looper
+                            Image(systemName: "repeat.1")
+                                .foregroundColor(.white)
+                            
+                            // Pause
+                            Image(systemName: "pause")
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.top, Constants.defaultPadding)
+                    .padding(.horizontal, Constants.defaultPadding)
+                    // Waveform view
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                        .fill(Color.white)
+                        .frame(height: 20)
+                        .padding(.horizontal, 4)
+                        .padding(.bottom, 4)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxHeight: 60)
+            .padding(.horizontal, Constants.defaultPadding)
+            .padding(.bottom, Constants.defaultPadding)
+            .shadow(color: .gray, radius: 3, x: 2, y: 2)
         }
-        .frame(maxHeight: 60)
-        .padding(.horizontal, Constants.defaultPadding)
-        .padding(.bottom, Constants.defaultPadding)
-        .shadow(color: .gray, radius: 3, x: 2, y: 2)
-
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        
-        var loggedInUser = User(username: "itsdpark")
-        // Load works in progress...
-        let worksInProgress = [
-            WorkInProgress(
-                title: "blank looks", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0),
-            WorkInProgress(
-                title: "just one cig", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1),
-            WorkInProgress(
-                title: "welcome to the way that you look at me", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2),
-            WorkInProgress(
-                title: "random melody ideas", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3)
-        ]
-        // Set works to
-        loggedInUser.worksInProgress = worksInProgress
-
-        return HomeView(viewModel: HomeViewModel(user: loggedInUser)) {}
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//
+//        var loggedInUser = User(username: "itsdpark")
+//        // Load works in progress...
+//        let worksInProgress = [
+//            WorkInProgress(
+//                title: "blank looks", creator: loggedInUser,
+//                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0),
+//            WorkInProgress(
+//                title: "just one cig", creator: loggedInUser,
+//                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1),
+//            WorkInProgress(
+//                title: "welcome to the way that you look at me", creator: loggedInUser,
+//                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2),
+//            WorkInProgress(
+//                title: "random melody ideas", creator: loggedInUser,
+//                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3)
+//        ]
+//        // Set works to
+//        loggedInUser.worksInProgress = worksInProgress
+//
+//        return HomeView(viewModel: HomeViewModel(user: loggedInUser)) {}
+//    }
+//}
 

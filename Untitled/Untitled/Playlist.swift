@@ -7,7 +7,28 @@
 
 import Foundation
 
-struct Playlist {
+class Playlist {
+    let name: String
+    var tracks: [Track]?
     
-    let tracks: [Track]
+    init(name: String, tracks: [Track]? = nil) {
+        self.name = name
+        self.tracks = tracks
+    }
+    
+    func play() {
+        if let tracks {
+            for track in tracks {
+                track.play()
+            }
+        }
+    }
+    
+    func pause() {
+        if let tracks {
+            for track in tracks {
+                track.pause()
+            }
+        }
+    }
 }

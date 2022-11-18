@@ -14,11 +14,16 @@ public final class HomeViewController: UIViewController {
     let user: User
     
     lazy var bridge: UIViewController = {
-        let rootView = HomeView(viewModel: viewModel) { [weak self] in
+        let rootView = HomeView(viewModel: viewModel) { [weak self] (workInProgress: WorkInProgress, playlist: Playlist) in
             guard let self = self else { return }
-            self.openWorkInProgressDetail()
+            self.play(workInProgress: workInProgress, playlist: playlist)
+        } pauseAction : { [weak self] (workInProgress: WorkInProgress, playlist: Playlist) in
+            guard let self = self else { return }
+            self.pause(workInProgress: workInProgress, playlist: playlist)
+        } openDetailsAction : { [weak self] (workInProgress: WorkInProgress, playlist: Playlist) in
+            guard let self = self else { return }
+            self.openWorkInProgressDetail(workInProgress: workInProgress, playlist: playlist)
         }
-        
         return UIHostingController(rootView: rootView)
     }()
     
@@ -46,7 +51,15 @@ public final class HomeViewController: UIViewController {
         }
     }
     
-    func openWorkInProgressDetail() {
-        viewModel.openWorkInProgressDetail(with: self)
+    func play(workInProgress: WorkInProgress, playlist: Playlist) {
+        viewModel.play(workInProgress: workInProgress, playlist: playlist)
+    }
+    
+    func pause(workInProgress: WorkInProgress, playlist: Playlist) {
+        viewModel.pause(workInProgress: workInProgress, playlist: playlist)
+    }
+    
+    func openWorkInProgressDetail(workInProgress: WorkInProgress, playlist: Playlist) {
+        viewModel.openWorkInProgressDetail(with: self, workInProgress: workInProgress, playlist: playlist)
     }
 }

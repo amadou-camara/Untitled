@@ -17,16 +17,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let worksInProgress = [
             WorkInProgress(
                 title: "blank looks", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 0),
+                dateCreated: Date(), privacy: .openToAll, playlists: [
+                    Playlist(name: "final mix", tracks: [
+                        Track(name: "instrumental", id: 1),
+                        Track(name: "vocals", id: 2)
+                    ])
+                ], id: 0),
             WorkInProgress(
                 title: "just one cig", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 1),
+                dateCreated: Date(), privacy: .openToAll, playlists: [
+                    Playlist(name: "v2 mix", tracks: [
+                        Track(name: "heatt", id: 1),
+                        Track(name: "cig vocals", id: 2)
+                    ])
+                ], id: 1),
             WorkInProgress(
                 title: "welcome to the way that you look at me", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 2),
+                dateCreated: Date(), privacy: .openToAll, playlists: [
+                    Playlist(name: "v1 mix", tracks: [
+                        Track(name: "not your average mix", id: 1),
+                        Track(name: "doozy's vocals", id: 2)
+                    ])
+                ],id: 2),
             WorkInProgress(
                 title: "random melody ideas", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [], id: 3)
+                dateCreated: Date(), privacy: .openToAll, playlists: [
+                    Playlist(name: "ideation", tracks: [
+                        Track(name: "fun beat", id: 1),
+                        Track(name: "sounds", id: 2)
+                    ])
+                ], id: 3)
         ]
         // Set works to
         loggedInUser.worksInProgress = worksInProgress

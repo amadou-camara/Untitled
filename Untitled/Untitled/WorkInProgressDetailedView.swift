@@ -14,7 +14,10 @@ private enum Constants {
 
 struct WorkInProgressDetailedView: View {
     
+    let viewModel: WorkInProgressDetailedViewModel
     let dismissAction: () -> Void
+    let muteAction: (Track) -> Void
+    let unmuteAction: (Track) -> Void
     
     var body: some View {
         content
@@ -23,34 +26,37 @@ struct WorkInProgressDetailedView: View {
     private var content: some View {
         GeometryReader { bounds in
             let safeAreaInsets = bounds.safeAreaInsets
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(spacing: 20) {
-                    TrackCardView(trackName: "Track")
-                    TrackCardView(trackName: "instrumental")
-                    TrackCardView(trackName: "vocals")
+            if let tracks = viewModel.tracks {
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(spacing: 20) {
+                        ForEach(tracks) { track in
+                            TrackCardView(track: track, muteAction: muteAction, unmuteAction: unmuteAction)
+                        }
+                    }
+                    .padding(.top, 20)
+                    .safeAreaInset(edge: .leading, spacing: 0) {
+                        EmptyView().frame(width: safeAreaInsets.leading + Constants.defaultPadding)
+                    }
+                    .safeAreaInset(edge: .trailing, spacing: 0) {
+                        EmptyView().frame(width: safeAreaInsets.trailing + Constants.defaultPadding)
+                    }
+                    Spacer()
                 }
-                .padding(.top, 20)
-                .safeAreaInset(edge: .leading, spacing: 0) {
-                    EmptyView().frame(width: safeAreaInsets.leading + Constants.defaultPadding)
-                }
-                .safeAreaInset(edge: .trailing, spacing: 0) {
-                    EmptyView().frame(width: safeAreaInsets.trailing + Constants.defaultPadding)
-                }
-                Spacer()
-            }
-            .safeAreaInset(edge: .top) {
-                VStack {
-                    header
-                    Divider()
-                        .overlay(.white)
-                }
-                .background(Color(red: 39/255, green: 39/255, blue: 39/255))
-            }
-            .safeAreaInset(edge: .bottom) {
-                stickyFooter
-                    .frame(maxHeight: 120)
+                .safeAreaInset(edge: .top) {
+                    VStack {
+                        header
+                        Divider()
+                            .overlay(.white)
+                    }
                     .background(Color(red: 39/255, green: 39/255, blue: 39/255))
+                }
+                .safeAreaInset(edge: .bottom) {
+                    stickyFooter
+                        .frame(maxHeight: 120)
+                        .background(Color(red: 39/255, green: 39/255, blue: 39/255))
+                }
             }
+            
         }
         .background(Color(red: 39/255, green: 39/255, blue: 39/255))
     }
@@ -98,7 +104,7 @@ struct WorkInProgressDetailedView: View {
                     // first line
                     HStack {
                         // title
-                        Text("final mix")
+                        Text(viewModel.workInProgress.title)
                             .font(Font.custom("UntitledSans-Regular", size: 18))
                             .foregroundColor(.white)
                         // more info button
@@ -170,6 +176,7 @@ struct WorkInProgressDetailedView: View {
 
             }
             .padding(.horizontal, Constants.defaultPadding / 2)
+            .padding(.bottom, 6)
 
             // Butoons
             HStack {
@@ -229,27 +236,39 @@ struct WorkInProgressDetailedView: View {
 }
 
 private struct TrackCardView: View {
-    let trackName: String
+    @ObservedObject var track: Track
+    let muteAction: (Track) -> Void
+    let unmuteAction: (Track) -> Void
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .fill(Color.blue)
+            if track.trackIsPlaying {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Color.blue)
+            } else {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
+            }
             VStack {
                 // Top row
                 HStack {
-                    Text(trackName)
+                    Text(track.name)
                         .font(Font.custom("UntitledSans-Regular", size: 14))
                         .foregroundColor(.white)
                     Spacer()
                     HStack(spacing: 40) {
                         // mute
                         Button {
-                            
+                            toggleMuteOf(track: track)
                         } label: {
                             // Change label if track is not muted
-                            Image(systemName: "speaker.slash")
-                                .foregroundColor(.white)
+                            if track.trackIsPlaying {
+                                Image(systemName: "speaker.slash")
+                                    .foregroundColor(.white)
+                            } else {
+                                Image(systemName: "speaker.fill")
+                                    .foregroundColor(.white)
+                            }
                         }
                         // headphones
                         Button {
@@ -284,10 +303,18 @@ private struct TrackCardView: View {
         .frame(maxHeight: 60)
         .padding(.bottom, Constants.defaultPadding)
     }
-}
-
-struct WorkInProgressDetailedView_Previews: PreviewProvider {
-    static var previews: some View {
-        WorkInProgressDetailedView(dismissAction: {})
+    
+    func toggleMuteOf(track: Track) {
+        if track.trackIsPlaying {
+            muteAction(track)
+        } else {
+            unmuteAction(track)
+        }
     }
 }
+
+//struct WorkInProgressDetailedView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        WorkInProgressDetailedView(dismissAction: {})
+//    }
+//}
