@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import DSWaveformImage
+import DSWaveformImageViews
 
 private enum Constants {
     static let defaultPadding: CGFloat = 16
@@ -14,7 +16,9 @@ private enum Constants {
 
 struct WorkInProgressDetailedView: View {
     
-    let viewModel: WorkInProgressDetailedViewModel
+    let trackColors: [Color] = [.white, .blue, .purple, .orange, .red, .green]
+    
+    @ObservedObject var viewModel: WorkInProgressDetailedViewModel
     let dismissAction: () -> Void
     let muteAction: (Track) -> Void
     let unmuteAction: (Track) -> Void
@@ -30,7 +34,8 @@ struct WorkInProgressDetailedView: View {
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(spacing: 20) {
                         ForEach(tracks) { track in
-                            TrackCardView(track: track, muteAction: muteAction, unmuteAction: unmuteAction)
+                            // not track id in prod
+                            TrackCardView(viewModel: viewModel, track: track, color: trackColors[track.id], muteAction: muteAction, unmuteAction: unmuteAction)
                         }
                     }
                     .padding(.top, 20)
@@ -104,7 +109,7 @@ struct WorkInProgressDetailedView: View {
                     // first line
                     HStack {
                         // title
-                        Text(viewModel.workInProgress.title)
+                        Text(viewModel.currentPlaylist.name)
                             .font(Font.custom("UntitledSans-Regular", size: 18))
                             .foregroundColor(.white)
                         // more info button
@@ -153,10 +158,49 @@ struct WorkInProgressDetailedView: View {
                 .frame(maxWidth: .infinity)
             
             // Waveform
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .fill(Color.white)
-                .frame(height: 20)
-                .padding(.horizontal, Constants.defaultPadding)
+            ZStack {
+                if let tracks = viewModel.tracks {
+                    ForEach(tracks) { track in
+                        if let path = track.path {
+                            
+                            let audioURL = URL(fileURLWithPath: path)
+                            
+                            ZStack(alignment: .leading) {
+                                WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                                    style: .striped(
+                                        .init(
+                                            color: DSColor(Color(red: 1, green: 1, blue: 1, opacity: 0.1)),
+                                            width: 1,
+                                            spacing: 3
+                                        )
+                                    ),
+                                    position: .bottom,
+                                    scale: 1))
+                                WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                                    style: .striped(
+                                        .init(
+                                            color: .white,
+                                            width: 1,
+                                            spacing: 3
+                                        )
+                                    ),
+                                    position: .bottom,
+                                    scale: 1))
+                                .mask(alignment: .leading) {
+                                    GeometryReader { geometry in
+                                        Rectangle()
+                                            .frame(width: geometry.size.width * viewModel.progress)
+                                    }
+                                }
+                            }
+                            .frame(maxHeight: 20)
+                            .padding(.bottom, 4)
+                        }
+                    }
+                }
+            }
+            .frame(height: 20)
+            .padding(.horizontal, Constants.defaultPadding)
 
             Divider()
                 .overlay(.white)
@@ -165,15 +209,17 @@ struct WorkInProgressDetailedView: View {
 
             // Times
             HStack {
+                // Current
                 Text("00:00")
                     .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
                     .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
 
                 Spacer()
-                Text("03:37")
-                    .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
-                    .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
-
+                if let duration = viewModel.duration {
+                    Text(duration)
+                        .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
+                        .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
+                }
             }
             .padding(.horizontal, Constants.defaultPadding / 2)
             .padding(.bottom, 6)
@@ -236,7 +282,9 @@ struct WorkInProgressDetailedView: View {
 }
 
 private struct TrackCardView: View {
+    @ObservedObject var viewModel: WorkInProgressDetailedViewModel
     @ObservedObject var track: Track
+    let color: Color
     let muteAction: (Track) -> Void
     let unmuteAction: (Track) -> Void
     
@@ -244,7 +292,7 @@ private struct TrackCardView: View {
         ZStack {
             if track.trackIsPlaying {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                    .fill(Color.blue)
+                    .fill(color)
             } else {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .fill(Color(red: 58/255, green: 58/255, blue: 58/255))
@@ -292,11 +340,42 @@ private struct TrackCardView: View {
                 .padding(.top, Constants.defaultPadding)
 
                 // Waveform view
-                RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                    .fill(Color.white)
-                    .frame(height: 20)
-                    .padding(.horizontal, 4)
+                
+                if let path = track.path {
+                    
+                    let audioURL = URL(fileURLWithPath: path)
+                    
+                    ZStack(alignment: .leading) {
+                        WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                            style: .striped(
+                                .init(
+                                    color: DSColor(Color(red: 1, green: 1, blue: 1, opacity: 0.1)),
+                                    width: 1,
+                                    spacing: 3
+                                )
+                            ),
+                            position: .middle,
+                            scale: 1))
+                        WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                            style: .striped(
+                                .init(
+                                    color: .white,
+                                    width: 1,
+                                    spacing: 3
+                                )
+                            ),
+                            position: .middle,
+                            scale: 1))
+                        .mask(alignment: .leading) {
+                            GeometryReader { geometry in
+                                Rectangle()
+                                    .frame(width: geometry.size.width * viewModel.progress)
+                            }
+                        }
+                    }
+                    .frame(maxHeight: 20)
                     .padding(.bottom, 4)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

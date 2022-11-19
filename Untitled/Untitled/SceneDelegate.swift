@@ -39,14 +39,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         Track(name: "doozy's vocals", id: 2)
                     ])
                 ],id: 2),
-            WorkInProgress(
-                title: "random melody ideas", creator: loggedInUser,
-                dateCreated: Date(), privacy: .openToAll, playlists: [
-                    Playlist(name: "ideation", tracks: [
-                        Track(name: "fun beat", id: 1),
-                        Track(name: "sounds", id: 2)
-                    ])
-                ], id: 3)
+//            WorkInProgress(
+//                title: "random melody ideas", creator: loggedInUser,
+//                dateCreated: Date(), privacy: .openToAll, playlists: [
+//                    Playlist(name: "ideation", tracks: [
+//                        Track(name: "fun beat", id: 1),
+//                        Track(name: "sounds", id: 2)
+//                    ])
+//                ], id: 3)
         ]
         // Set works to
         loggedInUser.worksInProgress = worksInProgress

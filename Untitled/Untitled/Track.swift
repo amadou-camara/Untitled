@@ -5,16 +5,17 @@
 //  Created by Amadou Camara on 11/9/22.
 //
 
-import Foundation
+import UIKit
 import AVFoundation
 
 class Track: ObservableObject, Identifiable {
     let name: String
     let id: Int
     @Published var trackIsPlaying: Bool = false
+    let path: String?
     
     lazy var player: AVAudioPlayer? = {
-        if let path = Bundle.main.path(forResource: name, ofType: "mp3") {
+        if let path {
             return try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
         }
         return nil
@@ -23,6 +24,13 @@ class Track: ObservableObject, Identifiable {
     init(name: String, id: Int) {
         self.name = name
         self.id = id
+        
+        if let path = Bundle.main.path(forResource: name, ofType: "mp3") {
+            self.path = path
+
+        } else {
+            self.path = nil
+        }
     }
     
     func play() {

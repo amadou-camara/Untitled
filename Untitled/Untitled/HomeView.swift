@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import UIKit
+import DSWaveformImage
+import DSWaveformImageViews
 
 private enum Constants {
     static let defaultPadding: CGFloat = 16
@@ -228,6 +231,8 @@ private struct WorkInProgressView: View {
                 if workInProgress.isPlaying {
                     if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
                         pauseAction(workInProgress, playlist)
+                        viewModel.currentWorkInProgress = workInProgress
+                        viewModel.currentWorkInProgress?.isPlaying = false
                     }
                 } else {
                     if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
@@ -247,10 +252,18 @@ private struct WorkInProgressView: View {
         } label: {
             ZStack {
                 // Will be updated with image
-                RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                    .fill()
-                    .foregroundColor(.blue)
-                    .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+                if let coverArt = workInProgress.coverArt {
+                    Image(uiImage: coverArt)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+                        .cornerRadius(Constants.cornerRadius)
+                } else {
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                        .fill()
+                        .foregroundColor(.blue)
+                        .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+                }
             
                 if workInProgress.isPlaying {
                     RoundedRectangle(cornerRadius: Constants.cornerRadius)
@@ -297,7 +310,7 @@ private struct WorkInProgressPlayerView: View {
     @ObservedObject var workInProgress: WorkInProgress
     
     var body: some View {
-        if workInProgress.isPlaying, let currentPlaylist = viewModel.currentPlaylist {
+        if viewModel.showPlayer, let currentPlaylist = viewModel.currentPlaylist {
             ZStack {
                 RoundedRectangle(cornerRadius: Constants.cornerRadius)
                     .fill(Color(red: 39/255, green: 39/255, blue: 39/255))
@@ -312,7 +325,7 @@ private struct WorkInProgressPlayerView: View {
                                 .foregroundColor(.white)
                             
                             // Count
-                            Text("00:23")
+                            Text(viewModel.currentlyAt)
                                 .font(Font.custom("MajorMonoDisplay-Regular", size: 12))
                                 .foregroundColor(Color(red: 188/255, green: 188/255, blue: 188/255))
                         }
@@ -327,19 +340,67 @@ private struct WorkInProgressPlayerView: View {
                             Image(systemName: "repeat.1")
                                 .foregroundColor(.white)
                             
-                            // Pause
-                            Image(systemName: "pause")
-                                .foregroundColor(.white)
+                            Button {
+                                
+                            } label : {
+                                if workInProgress.isPlaying {
+                                    // Pause
+                                    Image(systemName: "pause")
+                                        .foregroundColor(.white)
+                                } else {
+                                    Image(systemName: "play.fill")
+                                        .foregroundColor(.white)
+                                }
+                            }
                         }
                     }
                     .padding(.top, Constants.defaultPadding)
                     .padding(.horizontal, Constants.defaultPadding)
                     // Waveform view
-                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                        .fill(Color.white)
-                        .frame(height: 20)
-                        .padding(.horizontal, 4)
-                        .padding(.bottom, 4)
+                    ZStack {
+                        if let tracks = viewModel.currentPlaylist?.tracks {
+                            ForEach(tracks) { track in
+                                if let path = track.path {
+                                    
+                                    let audioURL = URL(fileURLWithPath: path)
+                                    
+                                    ZStack(alignment: .leading) {
+                                        WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                                            style: .striped(
+                                                .init(
+                                                    color: DSColor(Color(red: 1, green: 1, blue: 1, opacity: 0.1)),
+                                                    width: 1,
+                                                    spacing: 3
+                                                )
+                                            ),
+                                            position: .bottom,
+                                            scale: 3))
+                                        WaveformView(audioURL: audioURL, configuration: Waveform.Configuration(
+                                            style: .striped(
+                                                .init(
+                                                    color: .white,
+                                                    width: 1,
+                                                    spacing: 3
+                                                )
+                                            ),
+                                            position: .bottom,
+                                            scale: 3))
+                                        .mask(alignment: .leading) {
+                                            GeometryReader { geometry in
+                                                Rectangle()
+                                                    .frame(width: geometry.size.width * viewModel.progress)
+                                            }
+                                        }
+                                    }
+                                    .frame(maxHeight: 20)
+                                    .padding(.bottom, 4)
+                                }
+                            }
+                        }
+                    }
+                    .frame(height: 20)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -347,9 +408,59 @@ private struct WorkInProgressPlayerView: View {
             .padding(.horizontal, Constants.defaultPadding)
             .padding(.bottom, Constants.defaultPadding)
             .shadow(color: .gray, radius: 3, x: 2, y: 2)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .animation(.easeOut(duration: 2), value: viewModel.showPlayer)
         }
     }
 }
+
+extension View {
+    func border(width: CGFloat, edges: [Edge], color: Color) -> some View {
+        overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
+    }
+}
+
+struct EdgeBorder: Shape {
+
+    var width: CGFloat
+    var edges: [Edge]
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        for edge in edges {
+            var x: CGFloat {
+                switch edge {
+                case .top, .bottom, .leading: return rect.minX
+                case .trailing: return rect.maxX - width
+                }
+            }
+
+            var y: CGFloat {
+                switch edge {
+                case .top, .leading, .trailing: return rect.minY
+                case .bottom: return rect.maxY - width
+                }
+            }
+
+            var w: CGFloat {
+                switch edge {
+                case .top, .bottom: return rect.width
+                case .leading, .trailing: return self.width
+                }
+            }
+
+            var h: CGFloat {
+                switch edge {
+                case .top, .bottom: return self.width
+                case .leading, .trailing: return rect.height
+                }
+            }
+            path.addPath(Path(CGRect(x: x, y: y, width: w, height: h)))
+        }
+        return path
+    }
+}
+
 
 //struct HomeView_Previews: PreviewProvider {
 //    static var previews: some View {

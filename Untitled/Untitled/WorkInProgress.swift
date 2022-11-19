@@ -25,6 +25,7 @@ class WorkInProgress: ObservableObject, Identifiable, Equatable {
     let dateCreated: Date
     let privacy: Privacy
     let playlists: [Playlist]?
+    let coverArt: UIImage?
     var id: Int
     @Published var isPlaying: Bool
     
@@ -35,7 +36,12 @@ class WorkInProgress: ObservableObject, Identifiable, Equatable {
         self.privacy = privacy
         self.playlists = playlists
         self.id = id
+        if let filePath = Bundle.main.path(forResource: "cover\(id)", ofType: "jpeg"),
+            let image = UIImage(contentsOfFile: filePath) {
+            self.coverArt = image
+        } else {
+            self.coverArt = nil
+        }
         self.isPlaying = isPlaying
     }
-//    let coverArt: UIImage?
 }

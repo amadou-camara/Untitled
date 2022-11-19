@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 class WorkInProgressDetailedViewController: UIViewController {
-    @StateObject var viewModel: WorkInProgressDetailedViewModel
+    var viewModel: WorkInProgressDetailedViewModel
     let user: User
     
     lazy var bridge: UIViewController = {
@@ -28,7 +28,11 @@ class WorkInProgressDetailedViewController: UIViewController {
     }()
     
     init(user: User, workInProgress: WorkInProgress, currentPlaylist: Playlist) {
-        _viewModel = StateObject(wrappedValue: WorkInProgressDetailedViewModel(user: user, workInProgress: workInProgress, currentPlaylist: currentPlaylist))
+        viewModel = WorkInProgressDetailedViewModel(
+            user: user,
+            workInProgress: workInProgress,
+            currentPlaylist: currentPlaylist
+        )
         self.user = user
         super.init(nibName: nil, bundle: nil)
     }

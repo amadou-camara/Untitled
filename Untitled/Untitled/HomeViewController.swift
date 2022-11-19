@@ -10,9 +10,9 @@ import SwiftUI
 
 public final class HomeViewController: UIViewController {
     
-    @StateObject var viewModel: HomeViewModel
+    var viewModel: HomeViewModel
     let user: User
-    
+        
     lazy var bridge: UIViewController = {
         let rootView = HomeView(viewModel: viewModel) { [weak self] (workInProgress: WorkInProgress, playlist: Playlist) in
             guard let self = self else { return }
@@ -28,7 +28,7 @@ public final class HomeViewController: UIViewController {
     }()
     
     init(user: User) {
-        _viewModel = StateObject(wrappedValue: HomeViewModel(user: user))
+        self.viewModel = HomeViewModel(user: user)
         self.user = user
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,13 +42,6 @@ public final class HomeViewController: UIViewController {
         bridge.view.frame = view.bounds
         view.addSubview(bridge.view)
         bridge.didMove(toParent: self)
-        
-        for family: String in UIFont.familyNames {
-            print(family)
-            for names: String in UIFont.fontNames(forFamilyName: family) {
-                print("== \(names)")
-            }
-        }
     }
     
     func play(workInProgress: WorkInProgress, playlist: Playlist) {
