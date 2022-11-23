@@ -28,6 +28,8 @@
 		00CC5B7B2927DB3C009EFC9E /* cover1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 00CC5B782927DB3B009EFC9E /* cover1.jpeg */; };
 		00CC5B7E2927E0A0009EFC9E /* DSWaveformImage in Frameworks */ = {isa = PBXBuildFile; productRef = 00CC5B7D2927E0A0009EFC9E /* DSWaveformImage */; };
 		00CC5B802927E0A0009EFC9E /* DSWaveformImageViews in Frameworks */ = {isa = PBXBuildFile; productRef = 00CC5B7F2927E0A0009EFC9E /* DSWaveformImageViews */; };
+		00CC5B82292D04E7009EFC9E /* DetailsViewPresentAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CC5B81292D04E7009EFC9E /* DetailsViewPresentAnimationController.swift */; };
+		00CC5B84292D090C009EFC9E /* DetailsViewDismissAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CC5B83292D090C009EFC9E /* DetailsViewDismissAnimationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,8 @@
 		00CC5B762927DB3A009EFC9E /* cover2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover2.jpeg; sourceTree = "<group>"; };
 		00CC5B772927DB3A009EFC9E /* cover0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover0.jpeg; sourceTree = "<group>"; };
 		00CC5B782927DB3B009EFC9E /* cover1.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover1.jpeg; sourceTree = "<group>"; };
+		00CC5B81292D04E7009EFC9E /* DetailsViewPresentAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewPresentAnimationController.swift; sourceTree = "<group>"; };
+		00CC5B83292D090C009EFC9E /* DetailsViewDismissAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewDismissAnimationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,8 @@
 				00CC5B6829217C79009EFC9E /* WorkInProgressDetailedViewModel.swift */,
 				0023D12E291D3E8700EFE417 /* Assets.xcassets */,
 				0023D133291D3E8700EFE417 /* Info.plist */,
+				00CC5B81292D04E7009EFC9E /* DetailsViewPresentAnimationController.swift */,
+				00CC5B83292D090C009EFC9E /* DetailsViewDismissAnimationController.swift */,
 			);
 			path = Untitled;
 			sourceTree = "<group>";
@@ -202,8 +208,10 @@
 				0023D143291D40DB00EFE417 /* WorkInProgress.swift in Sources */,
 				0023D146291D40DB00EFE417 /* Track.swift in Sources */,
 				0023D145291D40DB00EFE417 /* HomeView.swift in Sources */,
+				00CC5B82292D04E7009EFC9E /* DetailsViewPresentAnimationController.swift in Sources */,
 				0023D144291D40DB00EFE417 /* HomeViewController.swift in Sources */,
 				0023D141291D40DB00EFE417 /* Playlist.swift in Sources */,
+				00CC5B84292D090C009EFC9E /* DetailsViewDismissAnimationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

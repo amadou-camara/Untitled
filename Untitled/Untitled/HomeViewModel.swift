@@ -26,7 +26,8 @@ class HomeViewModel: ObservableObject {
         return WorkInProgressDetailedViewController(
             user: user,
             workInProgress: currentWorkInProgress!,
-            currentPlaylist: currentPlaylist!
+            currentPlaylist: currentPlaylist!,
+            homeViewModel: self
         )
     }()
 
@@ -105,7 +106,7 @@ class HomeViewModel: ObservableObject {
     
     
     func openWorkInProgressDetail(with presenter: UIViewController, workInProgress: WorkInProgress, playlist: Playlist) {
-        detailedViewController.modalPresentationStyle = .overFullScreen
+        detailedViewController.modalPresentationStyle = .fullScreen
         presenter.present(detailedViewController, animated: true)
     }
     

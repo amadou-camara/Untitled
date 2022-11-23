@@ -19,15 +19,16 @@ struct WorkInProgressDetailedView: View {
     let trackColors: [Color] = [.white, .blue, .purple, .orange, .red, .green]
     
     @ObservedObject var viewModel: WorkInProgressDetailedViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
     let dismissAction: () -> Void
     let muteAction: (Track) -> Void
     let unmuteAction: (Track) -> Void
-    
+
     var body: some View {
         content
     }
     
-    private var content: some View {
+    var content: some View {
         GeometryReader { bounds in
             let safeAreaInsets = bounds.safeAreaInsets
             if let tracks = viewModel.tracks {

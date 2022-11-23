@@ -8,12 +8,15 @@
 import UIKit
 import SwiftUI
 
-class WorkInProgressDetailedViewController: UIViewController {
+class WorkInProgressDetailedViewController: UIViewController { //, UIViewControllerTransitioningDelegate {
     var viewModel: WorkInProgressDetailedViewModel
     let user: User
+    @ObservedObject var homeViewModel: HomeViewModel
+//    let presentAnimationController = DetailsViewPresentAnimationController()
+//    let dismissAnimationController = DetailsViewDismissAnimationController()
     
     lazy var bridge: UIViewController = {
-        let rootView = WorkInProgressDetailedView(viewModel: viewModel) { [weak self] in
+        let rootView = WorkInProgressDetailedView(viewModel: viewModel, homeViewModel: homeViewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
         } muteAction : { [weak self] (track: Track) in
@@ -27,14 +30,16 @@ class WorkInProgressDetailedViewController: UIViewController {
         return UIHostingController(rootView: rootView)
     }()
     
-    init(user: User, workInProgress: WorkInProgress, currentPlaylist: Playlist) {
+    init(user: User, workInProgress: WorkInProgress, currentPlaylist: Playlist, homeViewModel: HomeViewModel) {
         viewModel = WorkInProgressDetailedViewModel(
             user: user,
             workInProgress: workInProgress,
             currentPlaylist: currentPlaylist
         )
+        self.homeViewModel = homeViewModel
         self.user = user
         super.init(nibName: nil, bundle: nil)
+//        transitioningDelegate = self
     }
     
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -56,4 +61,13 @@ class WorkInProgressDetailedViewController: UIViewController {
     func unmuteTrack(_ track: Track) {
         viewModel.unmuteTrack(track)
     }
+    
+    // Custom animation controllersd
+//    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return presentAnimationController
+//    }
+//
+//    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return dismissAnimationController
+//    }
 }

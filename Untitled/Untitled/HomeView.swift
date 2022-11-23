@@ -147,10 +147,7 @@ struct HomeView: View {
             // If something playing animate as slide up from behind HStack
             if let currentWorkInProgress = viewModel.currentWorkInProgress,
                 let currentPlaylist = viewModel.currentPlaylist {
-                WorkInProgressPlayerView(viewModel: viewModel, workInProgress: currentWorkInProgress)
-                    .onTapGesture {
-                        openDetailsAction(currentWorkInProgress, currentPlaylist)
-                    }
+                WorkInProgressPlayerView(viewModel: viewModel, workInProgress: currentWorkInProgress, playlist: currentPlaylist, openDetailsAction: openDetailsAction)
             }
             VStack {
                 Divider()
@@ -219,34 +216,36 @@ private struct WorkInProgressView: View {
         // turn off highlighting on tap
         Button {
             // Play / show player for current playlist
-            if viewModel.currentWorkInProgress == nil {
-                if let playlist = workInProgress.playlists?[0] {
-                    playAction(workInProgress, playlist)
-                    viewModel.currentWorkInProgress = workInProgress
-                }
-                return
-            }
-            
-            if viewModel.currentWorkInProgress == workInProgress {
-                if workInProgress.isPlaying {
-                    if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
-                        pauseAction(workInProgress, playlist)
+            withAnimation(.easeInOut(duration: 0.5)) {
+                if viewModel.currentWorkInProgress == nil {
+                    if let playlist = workInProgress.playlists?[0] {
+                        playAction(workInProgress, playlist)
                         viewModel.currentWorkInProgress = workInProgress
-                        viewModel.currentWorkInProgress?.isPlaying = false
+                    }
+                    return
+                }
+                
+                if viewModel.currentWorkInProgress == workInProgress {
+                    if workInProgress.isPlaying {
+                        if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
+                            pauseAction(workInProgress, playlist)
+                            viewModel.currentWorkInProgress = workInProgress
+                            viewModel.currentWorkInProgress?.isPlaying = false
+                        }
+                    } else {
+                        if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
+                            playAction(workInProgress, playlist)
+                        }
                     }
                 } else {
+                    // Stop currentWork
+                    guard let currentWorkInProgress = viewModel.currentWorkInProgress, let currentPlaylist = viewModel.currentPlaylist else { return }
+                    pauseAction(currentWorkInProgress, currentPlaylist)
+                    
+                    // play new work in progress
                     if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
                         playAction(workInProgress, playlist)
                     }
-                }
-            } else {
-                // Stop currentWork
-                guard let currentWorkInProgress = viewModel.currentWorkInProgress, let currentPlaylist = viewModel.currentPlaylist else { return }
-                pauseAction(currentWorkInProgress, currentPlaylist)
-                
-                // play new work in progress
-                if let playlist = workInProgress.playlists?[viewModel.currentPlaylistIndex ?? 0] {
-                    playAction(workInProgress, playlist)
                 }
             }
         } label: {
@@ -270,16 +269,18 @@ private struct WorkInProgressView: View {
                         .fill()
                         .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
                         .frame(width: Constants.coverArtSize, height: Constants.coverArtSize)
+                        .transition(.scale)
 
                     Image(systemName: "waveform")
                         .foregroundColor(.white)
                         .frame(width: 15, height: 15)
                 } else {
-                    ZStack(alignment: .center) {
+                    ZStack(alignment:         .center) {
                         Circle()
                             .fill()
                             .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255, opacity: 0.6))
                             .frame(width: 40, height: 40)
+                            .transition(.scale)
                         
                         Image(systemName: "play.fill")
                             .foregroundColor(.white)
@@ -287,7 +288,7 @@ private struct WorkInProgressView: View {
                     }
                 }
             }
-            .animation(.easeInOut(duration: 10), value: viewModel.worksInProgress)
+            .animation(.easeInOut(duration: 1), value: viewModel.worksInProgress)
         }
     }
     
@@ -305,10 +306,13 @@ private struct WorkInProgressView: View {
     }
 }
 
-private struct WorkInProgressPlayerView: View {
+struct WorkInProgressPlayerView: View {
     @ObservedObject var viewModel: HomeViewModel
     @ObservedObject var workInProgress: WorkInProgress
-    
+    let playlist: Playlist
+    let openDetailsAction: (WorkInProgress, Playlist) -> Void
+    @State private var playerIsExpanded: Bool = false
+
     var body: some View {
         if viewModel.showPlayer, let currentPlaylist = viewModel.currentPlaylist {
             ZStack {
@@ -404,12 +408,20 @@ private struct WorkInProgressPlayerView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxHeight: 60)
-            .padding(.horizontal, Constants.defaultPadding)
-            .padding(.bottom, Constants.defaultPadding)
+            .frame(maxHeight: playerIsExpanded ? .infinity : 60)
+            .padding(.horizontal, playerIsExpanded ? 0 : Constants.defaultPadding)
+            .padding(.bottom, playerIsExpanded ? 0 : Constants.defaultPadding)
             .shadow(color: .gray, radius: 3, x: 2, y: 2)
             .transition(.move(edge: .bottom).combined(with: .opacity))
-            .animation(.easeOut(duration: 2), value: viewModel.showPlayer)
+            .onTapGesture {
+                withAnimation(.spring(blendDuration: 0.5)) {
+                    playerIsExpanded = true // change here to expand the playerview on animation
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        openDetailsAction(workInProgress, playlist)
+                        playerIsExpanded = false
+                    }
+                }
+            }
         }
     }
 }
